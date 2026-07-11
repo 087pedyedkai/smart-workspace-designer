@@ -1,10 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react';
 import type { WorkspaceObject } from '../types/workspace';
-import { workspaceObjects as defaultWorkspaceObjects } from '../data/workspaceObjects';
+import type { DeskBounds } from '../utils/workspaceAnalyzer';
 
-export default function WorkspaceCanvas() {
+interface WorkspaceCanvasProps {
+  objects: WorkspaceObject[];
+  setObjects: React.Dispatch<React.SetStateAction<WorkspaceObject[]>>;
+  onDeskBoundsChange: (bounds: DeskBounds) => void;
+}
+
+export default function WorkspaceCanvas({ objects, setObjects, onDeskBoundsChange }: WorkspaceCanvasProps) {
   const canvasRef = useRef<HTMLDivElement | null>(null);
-  const [objects, setObjects] = useState<WorkspaceObject[]>(defaultWorkspaceObjects);
+  const deskRef = useRef<HTMLDivElement | null>(null);
   const [draggedObjectId, setDraggedObjectId] = useState<string | null>(null);
   const [dragOffsetX, setDragOffsetX] = useState<number>(0);
   const [dragOffsetY, setDragOffsetY] = useState<number>(0);
@@ -20,6 +26,28 @@ export default function WorkspaceCanvas() {
     setDragOffsetX(e.clientX - rect.left - obj.x);
     setDragOffsetY(e.clientY - rect.top - obj.y);
   };
+
+  useEffect(() => {
+    const measureDesk = () => {
+      const canvasRect = canvasRef.current?.getBoundingClientRect();
+      const deskRect = deskRef.current?.getBoundingClientRect();
+      if (!canvasRect || !deskRect) return;
+
+      onDeskBoundsChange({
+        x: deskRect.left - canvasRect.left,
+        y: deskRect.top - canvasRect.top,
+        width: deskRect.width,
+        height: deskRect.height,
+      });
+    };
+
+    measureDesk();
+    window.addEventListener('resize', measureDesk);
+
+    return () => {
+      window.removeEventListener('resize', measureDesk);
+    };
+  }, [onDeskBoundsChange]);
 
   useEffect(() => {
     if (!draggedObjectId) return;
@@ -64,6 +92,11 @@ export default function WorkspaceCanvas() {
       ref={canvasRef}
       className="relative w-full h-full bg-white border-2 border-slate-200 rounded-xl shadow-md p-4 overflow-hidden"
     >
+      <div
+        ref={deskRef}
+        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-3xl bg-amber-200 border border-amber-300 shadow-sm"
+        style={{ width: 900, height: 500, maxWidth: '90%', maxHeight: '80%' }}
+      />
       {objects.map((obj) => (
         <div
           key={obj.id}
