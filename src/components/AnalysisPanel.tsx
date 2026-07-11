@@ -11,22 +11,23 @@ const AnalysisPanel: React.FC = () => {
         <div className="flex flex-col gap-3">
           <div className="flex items-center justify-between bg-white p-3 border border-slate-200 rounded shadow-sm">
             <span className="text-sm text-slate-600">Workspace Score:</span>
-            <span className="font-bold text-slate-800">--</span>
+            <span className="font-bold text-slate-800">82</span>
           </div>
           <div className="flex items-center justify-between bg-white p-3 border border-slate-200 rounded shadow-sm">
             <span className="text-sm text-slate-600">Ergonomic Score:</span>
-            <span className="font-bold text-slate-800">--</span>
+            <span className="font-bold text-slate-800">82</span>
           </div>
           <div className="flex items-center justify-between bg-white p-3 border border-slate-200 rounded shadow-sm">
             <span className="text-sm text-slate-600">Comfort Score:</span>
-            <span className="font-bold text-slate-800">--</span>
+            <span className="font-bold text-slate-800">82</span>
           </div>
         </div>
 
         <div className="flex flex-col gap-2">
           <h3 className="text-sm font-semibold text-slate-700">Suggestions:</h3>
           <div className="bg-slate-100 p-3 rounded border border-slate-200 text-sm text-slate-500 min-h-[100px]">
-            - No analysis yet
+            • Raise monitor 5cm
+            • Move keyboard closer
           </div>
         </div>
       </div>
