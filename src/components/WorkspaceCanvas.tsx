@@ -4,11 +4,14 @@ import type { DeskBounds } from '../utils/workspaceAnalyzer';
 
 interface WorkspaceCanvasProps {
   objects: WorkspaceObject[];
+  selectedObject: WorkspaceObject | null;
+  onSelectObject: (id: string | null) => void;
   setObjects: React.Dispatch<React.SetStateAction<WorkspaceObject[]>>;
   onDeskBoundsChange: (bounds: DeskBounds) => void;
+  deskSize: { width: number; height: number };
 }
 
-export default function WorkspaceCanvas({ objects, setObjects, onDeskBoundsChange }: WorkspaceCanvasProps) {
+export default function WorkspaceCanvas({ objects, selectedObject, onSelectObject, setObjects, onDeskBoundsChange, deskSize }: WorkspaceCanvasProps) {
   const canvasRef = useRef<HTMLDivElement | null>(null);
   const deskRef = useRef<HTMLDivElement | null>(null);
   const [draggedObjectId, setDraggedObjectId] = useState<string | null>(null);
@@ -19,6 +22,7 @@ export default function WorkspaceCanvas({ objects, setObjects, onDeskBoundsChang
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>, obj: WorkspaceObject) => {
     e.preventDefault();
+    onSelectObject(obj.id);
     const rect = canvasRef.current?.getBoundingClientRect();
     if (!rect) return;
 
@@ -95,8 +99,14 @@ export default function WorkspaceCanvas({ objects, setObjects, onDeskBoundsChang
       <div
         ref={deskRef}
         className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-3xl bg-amber-200 border border-amber-300 shadow-sm"
-        style={{ width: 900, height: 500, maxWidth: '90%', maxHeight: '80%' }}
-      />
+        style={{ width: deskSize.width, height: deskSize.height, maxWidth: '90%', maxHeight: '80%' }}
+      >
+        <div className="absolute inset-0 rounded-3xl overflow-hidden">
+          <div className="absolute left-1/2 top-1/2 h-[40%] w-[40%] -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-green-300/30" />
+          <div className="absolute left-1/2 top-1/2 h-[65%] w-[70%] -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-yellow-300/40 bg-yellow-300/25" />
+          <div className="absolute inset-4 rounded-[1.5rem] border border-red-300/30 bg-red-300/20" />
+        </div>
+      </div>
       {objects.map((obj) => (
         <div
           key={obj.id}
@@ -108,9 +118,13 @@ export default function WorkspaceCanvas({ objects, setObjects, onDeskBoundsChang
             width: obj.width,
             height: obj.height,
           }}
-          className={`flex items-center justify-center border-2 border-slate-300 bg-slate-50 shadow-sm rounded-md select-none transition-shadow duration-150 ${
+          className={`flex items-center justify-center border-2 rounded-md select-none transition-shadow duration-150 ${
+            selectedObject?.id === obj.id
+              ? 'border-blue-500 bg-blue-50 shadow-lg z-40 ring-2 ring-blue-400 ring-offset-1'
+              : 'border-slate-300 bg-slate-50 shadow-sm'
+          } ${
             draggedObjectId === obj.id
-              ? 'cursor-grabbing shadow-lg z-50 ring-2 ring-blue-400 ring-offset-1'
+              ? 'cursor-grabbing z-50'
               : 'cursor-grab hover:shadow-md'
           }`}
         >
@@ -119,6 +133,39 @@ export default function WorkspaceCanvas({ objects, setObjects, onDeskBoundsChang
           </span>
         </div>
       ))}
+      <div className="absolute bottom-4 right-4 w-64 rounded-xl border border-slate-200 bg-white/95 p-3 shadow-sm">
+        {objects.length === 0 ? (
+          <p className="text-sm text-slate-600">Workspace is empty. Use the left panel to add objects.</p>
+        ) : selectedObject ? (
+          <>
+            <h3 className="text-sm font-semibold text-slate-700">Selected object</h3>
+            <dl className="mt-2 space-y-1 text-sm text-slate-600">
+              <div className="flex items-center justify-between gap-2">
+                <dt>Name</dt>
+                <dd className="font-medium text-slate-700">{selectedObject.type}</dd>
+              </div>
+              <div className="flex items-center justify-between gap-2">
+                <dt>X</dt>
+                <dd className="font-medium text-slate-700">{Math.round(selectedObject.x)}</dd>
+              </div>
+              <div className="flex items-center justify-between gap-2">
+                <dt>Y</dt>
+                <dd className="font-medium text-slate-700">{Math.round(selectedObject.y)}</dd>
+              </div>
+              <div className="flex items-center justify-between gap-2">
+                <dt>Width</dt>
+                <dd className="font-medium text-slate-700">{Math.round(selectedObject.width)}</dd>
+              </div>
+              <div className="flex items-center justify-between gap-2">
+                <dt>Height</dt>
+                <dd className="font-medium text-slate-700">{Math.round(selectedObject.height)}</dd>
+              </div>
+            </dl>
+          </>
+        ) : (
+          <p className="text-sm text-slate-600">No object selected.</p>
+        )}
+      </div>
     </div>
   );
 }

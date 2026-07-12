@@ -5,6 +5,12 @@ interface AnalysisPanelProps {
   analysis: WorkspaceAnalysis;
 }
 
+const getScoreColor = (score: number) => {
+  if (score >= 90) return 'text-green-600';
+  if (score >= 70) return 'text-yellow-500';
+  return 'text-red-600';
+};
+
 const AnalysisPanel: React.FC<AnalysisPanelProps> = ({ analysis }) => {
   return (
     <aside className="w-[280px] bg-slate-50 border-l border-slate-200 h-full flex flex-col shrink-0 overflow-y-auto">
@@ -16,15 +22,15 @@ const AnalysisPanel: React.FC<AnalysisPanelProps> = ({ analysis }) => {
         <div className="flex flex-col gap-3">
           <div className="flex items-center justify-between bg-white p-3 border border-slate-200 rounded shadow-sm">
             <span className="text-sm text-slate-600">Workspace Score:</span>
-            <span className="font-bold text-slate-800">{analysis.workspaceScore}</span>
+            <span className={`font-bold ${getScoreColor(analysis.workspaceScore)}`}>{analysis.workspaceScore}</span>
           </div>
           <div className="flex items-center justify-between bg-white p-3 border border-slate-200 rounded shadow-sm">
             <span className="text-sm text-slate-600">Ergonomic Score:</span>
-            <span className="font-bold text-slate-800">{analysis.ergonomicScore}</span>
+            <span className={`font-bold ${getScoreColor(analysis.ergonomicScore)}`}>{analysis.ergonomicScore}</span>
           </div>
           <div className="flex items-center justify-between bg-white p-3 border border-slate-200 rounded shadow-sm">
             <span className="text-sm text-slate-600">Comfort Score:</span>
-            <span className="font-bold text-slate-800">{analysis.comfortScore}</span>
+            <span className={`font-bold ${getScoreColor(analysis.comfortScore)}`}>{analysis.comfortScore}</span>
           </div>
         </div>
 

@@ -1,3 +1,4 @@
+//workspaceAnalyzer.ts
 import type { WorkspaceObject } from '../types/workspace';
 
 export interface WorkspaceAnalysis {
@@ -44,6 +45,7 @@ export function analyzeWorkspace(objects: WorkspaceObject[], desk: DeskBounds): 
   const keyboard = objects.find((obj) => obj.type.toLowerCase() === 'keyboard');
   const mouse = objects.find((obj) => obj.type.toLowerCase() === 'mouse');
   const chair = objects.find((obj) => obj.type.toLowerCase() === 'chair');
+  const laptop = objects.find((obj) => obj.type.toLowerCase() === 'laptop');
 
   if (monitor && !isFullyInside(monitor, desk)) {
     workspaceScore -= 20;
@@ -69,6 +71,51 @@ export function analyzeWorkspace(objects: WorkspaceObject[], desk: DeskBounds): 
       comfortScore -= 10;
       suggestions.push('Center the chair with the desk.');
     }
+  }
+
+  if (monitor && chair) {
+    const monitorCenterX = getCenterX(monitor);
+    const chairCenterX = getCenterX(chair);
+
+    if (Math.abs(monitorCenterX - chairCenterX) > 80) {
+      ergonomicScore -= 10;
+      suggestions.push('Center the monitor with the chair.');
+    }
+  }
+
+  if (monitor && keyboard) {
+    if (keyboard.y < monitor.y) {
+      ergonomicScore -= 10;
+      suggestions.push('Place the keyboard below the monitor.');
+    }
+  }
+
+  if (keyboard && mouse) {
+    const horizontalGap =
+      keyboard.x + keyboard.width < mouse.x
+        ? mouse.x - (keyboard.x + keyboard.width)
+        : mouse.x + mouse.width < keyboard.x
+          ? keyboard.x - (mouse.x + mouse.width)
+          : 0;
+
+    const verticalGap =
+      keyboard.y + keyboard.height < mouse.y
+        ? mouse.y - (keyboard.y + keyboard.height)
+        : mouse.y + mouse.height < keyboard.y
+          ? keyboard.y - (mouse.y + mouse.height)
+          : 0;
+
+    const distance = horizontalGap === 0 || verticalGap === 0 ? Math.max(horizontalGap, verticalGap) : Math.sqrt(horizontalGap ** 2 + verticalGap ** 2);
+
+    if (distance > 40) {
+      comfortScore -= 10;
+      suggestions.push('Move the mouse closer to the keyboard.');
+    }
+  }
+
+  if (laptop && monitor && intersects(laptop, monitor)) {
+    workspaceScore -= 10;
+    suggestions.push('Separate the laptop from the monitor.');
   }
 
   return {
