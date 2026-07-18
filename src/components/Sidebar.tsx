@@ -1,6 +1,5 @@
 //Sidebar.tsx
-import React from 'react';
-import { workspaceObjects } from '../data/workspaceObjects';
+// import React from 'react';
 import type { WorkspaceObject } from '../types/workspace';
 
 interface SidebarProps {
@@ -9,40 +8,63 @@ interface SidebarProps {
   onRemoveObject: (type: string) => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ objects, onAddObject, onRemoveObject }) => {
-  const hasObject = (type: string) => objects.some((obj) => obj.type === type);
+const availableObjects = [
+  'Monitor',
+  'Laptop',
+  'Keyboard',
+  'Mouse',
+  'Chair',
+  'Desk Lamp',
+  'Speaker',
+];
 
+export default function Sidebar({ objects, onAddObject, onRemoveObject }: SidebarProps) {
   return (
-    <aside className="w-[240px] bg-slate-50 border-r border-slate-200 h-full flex flex-col shrink-0 overflow-y-auto">
-      <div className="p-4 border-b border-slate-200">
-        <h2 className="font-semibold text-slate-700">Objects</h2>
+    <div className="w-64 bg-white border-r border-slate-200 h-full flex flex-col shadow-sm z-10">
+      <div className="p-4 border-b border-slate-200 bg-slate-50">
+        <h2 className="text-lg font-bold text-slate-800">Workspace Objects</h2>
+        <p className="text-xs text-slate-500 mt-1">
+          Add items to build your workspace. Only one of each is allowed.
+        </p>
       </div>
-      <ul className="p-4 flex flex-col gap-3">
-        {workspaceObjects.map((obj) => {
-          const exists = hasObject(obj.type);
-
+      
+      <div className="flex-1 overflow-y-auto p-4 space-y-3">
+        {availableObjects.map((type) => {
+          // เช็กว่า object ชนิดนี้ถูกเพิ่มลงไปบนโต๊ะหรือยัง
+          const isAdded = objects.some((obj) => obj.type === type);
+          
           return (
-            <li key={obj.id}>
-              <div className="flex items-center gap-2 rounded border border-slate-300 bg-white p-3 shadow-sm">
-                <span className="flex-1 text-sm text-slate-700">{obj.type}</span>
+            <div
+              key={type}
+              className={`flex items-center justify-between p-3 rounded-lg border transition-colors ${
+                isAdded 
+                  ? 'border-blue-200 bg-blue-50' 
+                  : 'border-slate-200 bg-slate-50 hover:border-slate-300'
+              }`}
+            >
+              <span className={`text-sm font-medium ${isAdded ? 'text-blue-800' : 'text-slate-700'}`}>
+                {type}
+              </span>
+              
+              {isAdded ? (
                 <button
-                  type="button"
-                  onClick={() => (exists ? onRemoveObject(obj.type) : onAddObject(obj.type))}
-                  className={`rounded px-2 py-1 text-xs font-medium transition ${
-                    exists
-                      ? 'bg-rose-50 text-rose-600 hover:bg-rose-100'
-                      : 'bg-blue-50 text-blue-600 hover:bg-blue-100'
-                  }`}
+                  onClick={() => onRemoveObject(type)}
+                  className="px-3 py-1.5 text-xs font-semibold text-red-600 bg-white border border-red-200 rounded-md hover:bg-red-50 hover:border-red-300 transition-colors shadow-sm"
                 >
-                  {exists ? 'Remove' : 'Add'}
+                  Remove
                 </button>
-              </div>
-            </li>
+              ) : (
+                <button
+                  onClick={() => onAddObject(type)}
+                  className="px-4 py-1.5 text-xs font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors shadow-sm"
+                >
+                  Add
+                </button>
+              )}
+            </div>
           );
         })}
-      </ul>
-    </aside>
+      </div>
+    </div>
   );
-};
-
-export default Sidebar;
+}

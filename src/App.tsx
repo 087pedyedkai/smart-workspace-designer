@@ -24,40 +24,38 @@ const App: React.FC = () => {
   const analysis = deskBounds ? analyzeWorkspace(objects, deskBounds) : defaultAnalysis;
   const selectedObject = objects.find((obj) => obj.id === selectedObjectId) ?? null;
 
+  // แก้ไข deskSizes ให้ตรงตาม SPEC (cm)
   const deskSizes = {
-    small: { width: 700, height: 400 },
-    medium: { width: 900, height: 500 },
-    large: { width: 1100, height: 600 },
+    small: { width: 120, height: 60 },
+    medium: { width: 140, height: 70 },
+    large: { width: 160, height: 80 },
   };
 
   const handleAddObject = (type: string) => {
     setObjects((prevObjects) => {
-      if (prevObjects.some((obj) => obj.type === type)) {
-        return prevObjects;
-      }
+      if (prevObjects.some((obj) => obj.type === type)) return prevObjects;
 
+      // แก้ไข sizeMap เป็นขนาด cm โดยประมาณ
       const sizeMap: Record<string, { width: number; height: number }> = {
-        Monitor: { width: 240, height: 120 },
-        Laptop: { width: 180, height: 120 },
-        Keyboard: { width: 300, height: 80 },
-        Mouse: { width: 70, height: 90 },
-        Chair: { width: 160, height: 160 },
-        'Desk Lamp': { width: 90, height: 90 },
-        Speaker: { width: 90, height: 120 },
+        Monitor: { width: 60, height: 20 },
+        Laptop: { width: 35, height: 25 },
+        Keyboard: { width: 45, height: 15 },
+        Mouse: { width: 10, height: 15 },
+        Chair: { width: 60, height: 60 },
+        'Desk Lamp': { width: 15, height: 15 },
+        Speaker: { width: 10, height: 15 },
       };
 
-      const size = sizeMap[type] ?? { width: 120, height: 120 };
+      const size = sizeMap[type] ?? { width: 20, height: 20 };
       const selectedDesk = deskSizes[deskSize];
-      const x = Math.max(20, Math.round(selectedDesk.width / 2 - size.width / 2));
-      const y = Math.max(20, Math.round(selectedDesk.height / 2 - size.height / 2));
+      
+      // จัดให้อยู่กลางจอ (หน่วยเป็น cm)
+      const x = Math.max(0, Math.round(selectedDesk.width / 2 - size.width / 2) + 20); // +20 เพื่อขยับจากขอบ
+      const y = Math.max(0, Math.round(selectedDesk.height / 2 - size.height / 2) + 20);
 
       const newObject: WorkspaceObject = {
         id: `obj-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
-        type,
-        x,
-        y,
-        width: size.width,
-        height: size.height,
+        type, x, y, width: size.width, height: size.height,
       };
 
       return [...prevObjects, newObject];
@@ -92,11 +90,11 @@ const App: React.FC = () => {
               id="desk-size"
               value={deskSize}
               onChange={(e) => setDeskSize(e.target.value as 'small' | 'medium' | 'large')}
-              className="rounded border border-slate-300 bg-white px-2 py-1 text-sm text-slate-700"
+              className="rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             >
-              <option value="small">Small</option>
-              <option value="medium">Medium</option>
-              <option value="large">Large</option>
+              <option value="small">120 × 60 cm</option>
+              <option value="medium">140 × 70 cm</option>
+              <option value="large">160 × 80 cm</option>
             </select>
           </div>
           <WorkspaceCanvas
