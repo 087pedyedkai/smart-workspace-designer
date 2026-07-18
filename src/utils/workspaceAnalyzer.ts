@@ -209,7 +209,7 @@ export function analyzeWorkspace(objects: WorkspaceObject[], desk: DeskBounds): 
     const lampCenter = getCenterX(lamp);
     if (lampCenter > monitor.x && lampCenter < monitor.x + monitor.width) {
       comfortScore -= 10;
-      pushSuggestion('ย้ายโคมไฟไปด้านข้าง เพราะการวางให้ตรงกับจอภาพอาจทำให้แสงสะท้อน');
+      pushSuggestion('ย้ายโคมไฟไปด้านข้าง เพราะการวางตรงกับจอภาพอาจทำให้แสงสะท้อน');
     }
   }
 
