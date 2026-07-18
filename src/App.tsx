@@ -84,7 +84,7 @@ const App: React.FC = () => {
         <div className="flex flex-1 flex-col">
           <div className="flex items-center justify-end border-b border-slate-200 bg-white px-4 py-2">
             <label className="mr-2 text-sm font-medium text-slate-600" htmlFor="desk-size">
-              Desk size:
+              ขนาดโต๊ะ:
             </label>
             <select
               id="desk-size"

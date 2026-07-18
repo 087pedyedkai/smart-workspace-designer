@@ -8,13 +8,13 @@ export default function Header() {
           </svg>
         </div>
         <div>
-          <h1 className="text-xl font-bold text-slate-800 tracking-tight">Smart Workspace Designer</h1>
-          <p className="text-xs font-medium text-slate-500">Ergonomic Decision Support System</p>
+          <h1 className="text-xl font-bold text-slate-800 tracking-tight">เว็บไซต์ออกแบบพื้นที่ทำงาน</h1>
+          <p className="text-xs font-medium text-slate-500">ระบบสนับสนุนการตัดสินใจตามหลักสรีรศาสตร์</p>
         </div>
       </div>
-      <div className="hidden sm:block text-xs font-semibold text-slate-400 bg-slate-100 px-3 py-1.5 rounded-full border border-slate-200">
-        Version 1.0
-      </div>
+      {/* <div className="hidden sm:block text-xs font-semibold text-slate-400 bg-slate-100 px-3 py-1.5 rounded-full border border-slate-200">
+        รุ่น 1.0
+      </div> */}
     </header>
   );
 }

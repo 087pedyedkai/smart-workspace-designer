@@ -18,13 +18,28 @@ const availableObjects = [
   'Speaker',
 ];
 
+const getThaiLabel = (type: string) => {
+  const labels: Record<string, string> = {
+    Monitor: 'จอมอนิเตอร์',
+    Laptop: 'แล็ปท็อป',
+    Keyboard: 'คีย์บอร์ด',
+    Mouse: 'เมาส์',
+    Chair: 'เก้าอี้',
+    'Desk Lamp': 'โคมไฟ',
+    Speaker: 'ลำโพง',
+  };
+
+  return labels[type] ?? type;
+};
+
 export default function Sidebar({ objects, onAddObject, onRemoveObject }: SidebarProps) {
   return (
     <div className="w-64 bg-white border-r border-slate-200 h-full flex flex-col shadow-sm z-10">
       <div className="p-4 border-b border-slate-200 bg-slate-50">
-        <h2 className="text-lg font-bold text-slate-800">Workspace Objects</h2>
+        <h2 className="text-lg font-bold text-slate-800">อุปกรณ์ในพื้นที่ทำงาน</h2>
         <p className="text-xs text-slate-500 mt-1">
-          Add items to build your workspace. Only one of each is allowed.
+          เพิ่มอุปกรณ์เพื่อสร้างพื้นที่ทำงาน
+          จำกัดหนึ่งชิ้นต่อประเภท
         </p>
       </div>
       
@@ -43,7 +58,7 @@ export default function Sidebar({ objects, onAddObject, onRemoveObject }: Sideba
               }`}
             >
               <span className={`text-sm font-medium ${isAdded ? 'text-blue-800' : 'text-slate-700'}`}>
-                {type}
+                {getThaiLabel(type)}
               </span>
               
               {isAdded ? (
@@ -51,14 +66,14 @@ export default function Sidebar({ objects, onAddObject, onRemoveObject }: Sideba
                   onClick={() => onRemoveObject(type)}
                   className="px-3 py-1.5 text-xs font-semibold text-red-600 bg-white border border-red-200 rounded-md hover:bg-red-50 hover:border-red-300 transition-colors shadow-sm"
                 >
-                  Remove
+                  ลบ
                 </button>
               ) : (
                 <button
                   onClick={() => onAddObject(type)}
                   className="px-4 py-1.5 text-xs font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors shadow-sm"
                 >
-                  Add
+                  เพิ่ม
                 </button>
               )}
             </div>

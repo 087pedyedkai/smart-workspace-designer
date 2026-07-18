@@ -34,6 +34,20 @@ const intersects = (a: WorkspaceObject, b: WorkspaceObject) => {
 
 const getCenterX = (obj: { x: number; width: number }) => obj.x + obj.width / 2;
 
+const getThaiTypeName = (type: string) => {
+  const labels: Record<string, string> = {
+    Monitor: 'จอภาพ',
+    Laptop: 'แล็ปท็อป',
+    Keyboard: 'คีย์บอร์ด',
+    Mouse: 'เมาส์',
+    Chair: 'เก้าอี้',
+    'Desk Lamp': 'โคมไฟ',
+    Speaker: 'ลำโพง',
+  };
+
+  return labels[type] ?? type;
+};
+
 export function analyzeWorkspace(objects: WorkspaceObject[], desk: DeskBounds): WorkspaceAnalysis {
   let workspaceScore = 100;
   let ergonomicScore = 100;
@@ -57,12 +71,12 @@ export function analyzeWorkspace(objects: WorkspaceObject[], desk: DeskBounds): 
   
   if (monitor && !isFullyInside(monitor, desk)) {
     workspaceScore -= 20;
-    pushSuggestion('Move the monitor onto the desk to prevent damage.');
+    pushSuggestion('ย้ายจอภาพขึ้นบนโต๊ะเพื่อป้องกันความเสียหาย');
   }
   
   if (keyboard && !isFullyInside(keyboard, desk)) {
     ergonomicScore -= 15;
-    pushSuggestion('Move the keyboard onto the desk to fully support your arms.');
+    pushSuggestion('ย้ายคีย์บอร์ดขึ้นบนโต๊ะเพื่อรองรับแขนของคุณอย่างเต็มที่');
   }
 
   // วัตถุทางกายภาพห้ามซ้อนทับกัน (ยกเว้นเก้าอี้)
@@ -73,7 +87,7 @@ export function analyzeWorkspace(objects: WorkspaceObject[], desk: DeskBounds): 
         const typeA = deskObjects[i].type;
         const typeB = deskObjects[j].type;
         workspaceScore -= 10;
-        pushSuggestion(`Separate the ${typeA} and ${typeB}. Physical objects cannot overlap.`);
+        pushSuggestion(`แยก ${getThaiTypeName(typeA)} และ ${getThaiTypeName(typeB)} ออกจากกัน เพราะวัตถุทางกายภาพไม่ควรทับซ้อนกัน`);
       }
     }
   }
@@ -88,7 +102,7 @@ export function analyzeWorkspace(objects: WorkspaceObject[], desk: DeskBounds): 
   [lamp, speaker].forEach(acc => {
     if (acc && acc.y + acc.height > primaryZoneY) {
       workspaceScore -= 10;
-      pushSuggestion(`Move the ${acc.type} further back. It's blocking your primary reach zone.`);
+      pushSuggestion(`ย้าย${getThaiTypeName(acc.type)}ไปด้านหลังมากขึ้น เพราะกำลังขวางโซนอิฐมถึงหลักของคุณ`);
     }
   });
 
@@ -100,7 +114,7 @@ export function analyzeWorkspace(objects: WorkspaceObject[], desk: DeskBounds): 
     const deskCenterX = desk.x + desk.width / 2;
     if (Math.abs(getCenterX(chair) - deskCenterX) > desk.width * 0.1) {
       comfortScore -= 10;
-      pushSuggestion('Center the chair with the desk for overall spatial balance.');
+      pushSuggestion('จัดเก้าอี้ให้อยู่กลางโต๊ะเพื่อความสมดุลของพื้นที่');
     }
   }
 
@@ -109,10 +123,10 @@ export function analyzeWorkspace(objects: WorkspaceObject[], desk: DeskBounds): 
     const misalignment = Math.abs(getCenterX(chair) - getCenterX(keyboard));
     if (misalignment > 30) {
       ergonomicScore -= 15;
-      pushSuggestion('Align the chair with the keyboard to prevent severe spine twisting.');
+      pushSuggestion('จัดเก้าอี้ให้สอดคล้องกับคีย์บอร์ดเพื่อป้องกันการบิดหลังอย่างรุนแรง');
     } else if (misalignment > 15) {
       comfortScore -= 10;
-      pushSuggestion('Slightly adjust your chair to center it with the keyboard.');
+      pushSuggestion('ปรับเก้าอี้เล็กน้อยให้อยู่กลางกับคีย์บอร์ด');
     }
   }
 
@@ -121,10 +135,10 @@ export function analyzeWorkspace(objects: WorkspaceObject[], desk: DeskBounds): 
     const misalignment = Math.abs(getCenterX(chair) - getCenterX(monitor));
     if (misalignment > 30) {
       ergonomicScore -= 15;
-      pushSuggestion('Center the monitor with your chair to prevent neck strain.');
+      pushSuggestion('จัดจอภาพให้อยู่กลางกับเก้าอี้เพื่อป้องกันอาการปวดคอ');
     } else if (misalignment > 15) {
       comfortScore -= 10;
-      pushSuggestion('Adjust the monitor so it sits directly in front of you.');
+      pushSuggestion('ปรับจอภาพให้วางตรงหน้าคุณ');
     }
   }
 
@@ -137,7 +151,7 @@ export function analyzeWorkspace(objects: WorkspaceObject[], desk: DeskBounds): 
     const keyboardBottom = keyboard.y + keyboard.height;
     if (desk.height - keyboardBottom < 15) {
       ergonomicScore -= 15;
-      pushSuggestion('Leave at least 15cm of space in front of the keyboard to rest your wrists.');
+      pushSuggestion('ปล่อยพื้นที่ด้านหน้าคีย์บอร์ดอย่างน้อย 15 ซม. เพื่อพักข้อมือ');
     }
   }
 
@@ -156,7 +170,7 @@ export function analyzeWorkspace(objects: WorkspaceObject[], desk: DeskBounds): 
 
     if (distance > 15) {
       ergonomicScore -= 15; 
-      pushSuggestion('Keep the mouse closer to the keyboard (within 15cm) to avoid shoulder strain.');
+      pushSuggestion('วางเมาส์ให้อยู่ใกล้คีย์บอร์ดภายใน 15 ซม. เพื่อหลีกเลี่ยงอาการปวดไหล่');
     }
   }
 
@@ -171,7 +185,7 @@ export function analyzeWorkspace(objects: WorkspaceObject[], desk: DeskBounds): 
     // แต่ถ้าระยะห่างน้อยกว่า 50cm "และ" หน้าจอยังสามารถถอยหลังได้อีก (y > 5) ค่อยแจ้งเตือน
     if (distanceFromUser < 50 && monitor.y > 5) {
       ergonomicScore -= 15;
-      pushSuggestion('Push the monitor further back to protect your eyes (aim for an arm\'s length).');
+      pushSuggestion('ยกจอภาพไปไว้ด้านหลังมากขึ้นเพื่อปกป้องดวงตา (ให้ห่างประมาณความยาวแขน)');
     }
     // หมายเหตุ: ถ้าโต๊ะแคบ ถอยจอจนติดขอบแล้ว (y <= 5) แต่ระยะยังไม่ถึง 50cm ระบบจะไม่หักคะแนน 
     // เพราะถือว่าจัดวางได้ดีที่สุดเท่าที่โต๊ะจะอำนวยแล้ว
@@ -182,7 +196,7 @@ export function analyzeWorkspace(objects: WorkspaceObject[], desk: DeskBounds): 
     const gap = Math.abs(getCenterX(monitor) - getCenterX(laptop)) - (monitor.width / 2 + laptop.width / 2);
     if (gap > 30) {
       ergonomicScore -= 10;
-      pushSuggestion('Bring the laptop and monitor closer together to reduce neck movement.');
+      pushSuggestion('จัดแล็ปท็อปและจอภาพให้อยู่ใกล้กันมากขึ้นเพื่อลดการขยับคอ');
     }
   }
 
@@ -195,7 +209,7 @@ export function analyzeWorkspace(objects: WorkspaceObject[], desk: DeskBounds): 
     const lampCenter = getCenterX(lamp);
     if (lampCenter > monitor.x && lampCenter < monitor.x + monitor.width) {
       comfortScore -= 10;
-      pushSuggestion('Move the lamp to the side. Placing it in line with the monitor causes screen glare.');
+      pushSuggestion('ย้ายโคมไฟไปด้านข้าง เพราะการวางให้ตรงกับจอภาพอาจทำให้แสงสะท้อน');
     }
   }
 
