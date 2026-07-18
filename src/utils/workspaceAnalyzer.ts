@@ -102,7 +102,7 @@ export function analyzeWorkspace(objects: WorkspaceObject[], desk: DeskBounds): 
   [lamp, speaker].forEach(acc => {
     if (acc && acc.y + acc.height > primaryZoneY) {
       workspaceScore -= 10;
-      pushSuggestion(`ย้าย${getThaiTypeName(acc.type)}ไปด้านหลังมากขึ้น เพราะกำลังขวางโซนอิฐมถึงหลักของคุณ`);
+      pushSuggestion(`ย้าย${getThaiTypeName(acc.type)}ไปด้านหลังมากขึ้น เพราะกำลังขวางโซนเอื้อมถึงหลักของคุณ`);
     }
   });
 
@@ -114,7 +114,7 @@ export function analyzeWorkspace(objects: WorkspaceObject[], desk: DeskBounds): 
     const deskCenterX = desk.x + desk.width / 2;
     if (Math.abs(getCenterX(chair) - deskCenterX) > desk.width * 0.1) {
       comfortScore -= 10;
-      pushSuggestion('จัดเก้าอี้ให้อยู่กลางโต๊ะเพื่อความสมดุลของพื้นที่');
+      pushSuggestion('จัดเก้าอี้ให้อยู่กึ่งกลางโต๊ะเพื่อความสมดุลของพื้นที่');
     }
   }
 
@@ -123,10 +123,10 @@ export function analyzeWorkspace(objects: WorkspaceObject[], desk: DeskBounds): 
     const misalignment = Math.abs(getCenterX(chair) - getCenterX(keyboard));
     if (misalignment > 30) {
       ergonomicScore -= 15;
-      pushSuggestion('จัดเก้าอี้ให้สอดคล้องกับคีย์บอร์ดเพื่อป้องกันการบิดหลังอย่างรุนแรง');
+      pushSuggestion('จัดเก้าอี้ให้ตรงแนวกับคีย์บอร์ดเพื่อป้องกันการบิดหลังอย่างรุนแรง');
     } else if (misalignment > 15) {
       comfortScore -= 10;
-      pushSuggestion('ปรับเก้าอี้เล็กน้อยให้อยู่กลางกับคีย์บอร์ด');
+      pushSuggestion('ปรับเก้าอี้เล็กน้อยให้อยู่กึ่งกลางกับคีย์บอร์ด');
     }
   }
 
@@ -135,7 +135,7 @@ export function analyzeWorkspace(objects: WorkspaceObject[], desk: DeskBounds): 
     const misalignment = Math.abs(getCenterX(chair) - getCenterX(monitor));
     if (misalignment > 30) {
       ergonomicScore -= 15;
-      pushSuggestion('จัดจอภาพให้อยู่กลางกับเก้าอี้เพื่อป้องกันอาการปวดคอ');
+      pushSuggestion('จัดจอภาพให้อยู่กึ่งกลางกับเก้าอี้เพื่อป้องกันอาการปวดคอ');
     } else if (misalignment > 15) {
       comfortScore -= 10;
       pushSuggestion('ปรับจอภาพให้วางตรงหน้าคุณ');
