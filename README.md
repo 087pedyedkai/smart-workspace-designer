@@ -1,32 +1,47 @@
-# React + TypeScript + Vite
+# Smart Workspace Designer
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Smart Workspace Designer คือเว็บแอปพลิเคชันสำหรับออกแบบพื้นที่ทำงานแบบอัจฉริยะ โดยช่วยให้ผู้ใช้สร้างและปรับแต่งพื้นที่ทำงานบนโต๊ะเสมือนจริงเพื่อประเมินความเหมาะสมด้านสุขภาพและความสะดวกสบายในการใช้งาน
 
-Currently, two official plugins are available:
+## วัตถุประสงค์ของโปรเจกต์
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+โปรเจกต์นี้ถูกสร้างขึ้นเพื่อแสดงแนวคิดของระบบสนับสนุนการตัดสินใจ (Decision Support System) ในบริบทของงาน MIS โดยใช้กฎทาง ergonomics เพื่อช่วยให้ผู้ใช้วางแผนโครงสร้างพื้นที่ทำงานได้ดีขึ้น
 
-## React Compiler
+## คุณสมบัติหลัก
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- เลือกขนาดโต๊ะงานแบบต่าง ๆ ได้ 3 ขนาด
+  - 120 × 60 cm
+  - 140 × 70 cm
+  - 160 × 80 cm
+- เพิ่มวัตถุในพื้นที่ทำงานได้ เช่น จอภาพ, แล็ปท็อป, คีย์บอร์ด, เมาส์, เก้าอี้, โคมไฟ และลำโพง
+- ลากและย้ายวัตถุบนโต๊ะได้ด้วยการ Drag and Drop
+- เลือกวัตถุเพื่อดูข้อมูลตำแหน่งและขนาดแบบเรียลไทม์
+- ประเมินพื้นที่ทำงานแบบอัตโนมัติและแสดงผลเป็น 3 คะแนนหลัก
+  - Workspace Score
+  - Ergonomic Score
+  - Comfort Score
+- แสดงคำแนะนำเพื่อปรับปรุงการวางวัตถุให้เหมาะสมยิ่งขึ้น
 
-## Expanding the Oxlint configuration
+## Tech Stack ที่ใช้
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+- React
+- TypeScript
+- Vite
+- Tailwind CSS
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+## วิธีรันโปรเจกต์
+
+ติดตั้ง dependencies
+
+```bash
+npm install
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+รันโหมดพัฒนา
+
+```bash
+npm run dev
+```
+
+## หมายเหตุ
+
+โปรเจกต์นี้เป็นแอปพลิเคชันแบบ client-side โดยไม่มีฐานข้อมูลและไม่มีเซิร์ฟเวอร์หลังบ้าน การวิเคราะห์จะทำงานภายในเบราว์เซอร์โดยใช้กฎเชิงตรรกะแบบง่ายเพื่อจำลองระบบสนับสนุนการตัดสินใจด้าน ergonomics
